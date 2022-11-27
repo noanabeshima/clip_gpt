@@ -6,28 +6,31 @@ Trained on ~12M alt-text captions from [LAION-400M](https://laion.ai/blog/laion-
 
 It was trained to act as a text prior for interpretability, to be used for something like ['learning the prior'/'imitative generalization'](https://www.lesswrong.com/posts/JKj5Krff5oKMb8TjT/imitative-generalisation-aka-learning-the-prior-1).
 
-Suppose you have some function $f: \text{Image} -> \mathbb{R}$ (like e.g. a neuron in a vision model) and you hypothesize that its behavior can be approximately described with text. For example "Diagonal line from bottom-left to top-right of image" or "Dog head facing left".
+Suppose you have some function $f: \text{Image} \to \mathbb{R}$ (like e.g. a neuron in a vision model) and you hypothesize that its behavior can be approximately described with text. For example "Diagonal line from bottom-left to top-right of image" or "Dog head facing left".
 
 CLIP has this signature:
-$\text{CLIP} : (\text{Image}, \text{Text}) -> \mathbb{R}$
+
+$\text{CLIP} : (\text{Image}, \text{Text}) \to \mathbb{R}$
 
 Then, given a fixed piece of text $t \in \text{Text}$, we get a function
 
-$\text{CLIP}_{t} : \text{Image} -> \mathbb{R}
+$\text{CLIP}_{t} : \text{Image} \to \mathbb{R}$
 
-This function probably monotonically increases as its input $\text{im} \in \text{Image}$ better matches the text, $\text{t}$.
+This function probably monotonically increases as its input $\text{im} \in \text{Image}$ better matches the text, $\text{t} \in \text{Text}$.
 
 Then, if a function $f: \text{Image} \to \mathbb{R}$ monotonically increases as its input better matches *some* text/caption, we might hope that it can be modelled by
 
-$\text{CLIP}_{t}: \text{Image} -> \mathbb{R}$
-composed with some learned monotonic function $h_{\theta}$
-$h_{\theta}: \mathbb{R} \to \mathbb{R}$.
+$\text{CLIP}_{t} : \text{Image} \to \mathbb{R}$
 
-$f(\text{im}) \approxeq h(\text{CLIP}_{t}(\text{im}))$
+composed with some learned monotonic function $h_{\theta}$ with signature $h_{\theta}: \mathbb{R} \to \mathbb{R}$.
 
-for some $t \in \text{Text}$.
+I.E. we hope that for all $\text{im} \in \text{Image}$,
 
-The idea was that possibly this $t \in \text{Text}$ could be selected using either Gumbel-Softmax with CLIP GPT as a prior on text, or using reinforcement learning with CLIP GPT as a prior.
+$f(\text{im}) \approx h_{\theta}(\text{CLIP}_{t} (\text{im}))$
+
+for some $t \in \text{Text}$ and parameters $\theta \in \mathbb{R}^n$.
+
+The idea was that possibly this $t \in \text{Text}$ could be selected using either [Gumbel-Softmax](https://arxiv.org/abs/1611.01144) with CLIP GPT as a prior on text, or using [reinforcement learning with CLIP GPT](https://arxiv.org/abs/2009.01325).
 
 I decided not to pursue the direction because doing gradient descent in CLIP image embedding space + a monotonic function $h: \mathbb{R} \to \mathbb{R}$ along with some other similar techniques didn't do a great job at modelling logits of a small vision model (it did an alright job).
 
