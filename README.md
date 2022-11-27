@@ -34,6 +34,6 @@ The idea was that possibly this $t \in \text{Text}$ could be selected using eith
 
 I decided not to pursue the direction because doing gradient descent in CLIP image embedding space + a monotonic function $h: \mathbb{R} \to \mathbb{R}$ along with some other similar techniques didn't do a great job at modelling logits of a small vision model (it did an alright job).
 
-I also tried doing something like [Textual Inversion](https://textual-inversion.github.io/) to come up with learned tokens that combined with CLIP and a monotonic function would model logits. This had similar okay performance. I think textual inversion might be different because there's richer model feedback in generating images--trying to predict a single logit doesn't give great feedback.
+I also tried doing something like [Textual Inversion](https://textual-inversion.github.io/) to come up with learned tokens that combined with CLIP and a monotonic function would model logits. This had similar okay performance. Plugging in the CLIP last hidden states on the textual inversion token into stable diffusion didn't give very class-relevant pictures. I think textual inversion might be different because there's richer model feedback in generating images--trying to predict a single logit doesn't give great feedback.
 
 It still seems plausible to me that something in this direction could work, but less likely than when I began. Feel free to reach out if you're interested in this direction and think I might have useful advice!
